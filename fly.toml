@@ -2,7 +2,6 @@ app = "n8n-ashtvm"
 primary_region = "sin"
 
 [build]
-  image = "docker.n8n.io/n8nio/n8n:latest"
 
 [env]
   PORT = "5678"
