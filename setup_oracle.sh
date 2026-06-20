@@ -1,5 +1,5 @@
 #!/bin/bash
-# Veda Katha — Oracle Cloud Ubuntu VM setup
+# Veda Katha — Oracle Cloud (Oracle Linux) VM setup
 # Run once after SSH into fresh VM:
 #   chmod +x setup_oracle.sh && ./setup_oracle.sh
 
@@ -9,15 +9,15 @@ echo "=== Veda Katha VM Setup ==="
 
 # ── System packages ──────────────────────────
 echo "[1/6] Installing system packages..."
-sudo apt-get update -qq
-sudo apt-get install -y -qq \
-    curl git imagemagick fontconfig \
+sudo dnf update -y -q
+sudo dnf install -y -q \
+    curl git ImageMagick fontconfig \
     python3 python3-pip tmux unzip
 
 # ── Node.js 20 ───────────────────────────────
 echo "[2/6] Installing Node.js 20..."
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - -qq
-sudo apt-get install -y -qq nodejs
+curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
+sudo dnf install -y nodejs
 
 # ── Claude Code CLI ──────────────────────────
 echo "[3/6] Installing Claude Code CLI..."
@@ -57,7 +57,7 @@ echo ""
 echo "Install cron job to auto-post twice daily? (y/n)"
 read -r CRON_CHOICE
 if [ "$CRON_CHOICE" = "y" ]; then
-    CRON_CMD="30 0,12 * * * cd /home/ubuntu/veda_katha && /usr/bin/python3 pipeline.py >> /home/ubuntu/veda_katha/cron.log 2>&1"
+    CRON_CMD="30 0,12 * * * cd /home/opc/veda_katha && /usr/bin/python3 pipeline.py >> /home/opc/veda_katha/cron.log 2>&1"
     (crontab -l 2>/dev/null; echo "$CRON_CMD") | crontab -
     echo "Cron job installed: 6AM + 6PM IST daily."
 fi
