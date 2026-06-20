@@ -36,15 +36,13 @@ sudo curl -sL -o /usr/share/fonts/custom/DMSans-Regular.ttf \
 sudo fc-cache -f
 echo "Fonts installed."
 
-# ── Claude config ────────────────────────────
-echo "[5/6] Configuring Claude..."
+# ── Claude auth ──────────────────────────────
+echo "[5/6] Authenticating Claude..."
 echo ""
-echo "  Enter your Anthropic API key (from console.anthropic.com):"
-read -r -s ANTHROPIC_KEY
+echo "  Run this after setup to log in via your claude.ai account:"
+echo "    claude auth login"
+echo "  (Shows device code — approve on phone/laptop)"
 echo ""
-mkdir -p ~/.config/claude
-echo "{\"apiKey\": \"$ANTHROPIC_KEY\"}" > ~/.config/claude/config.json
-echo "Claude config saved."
 
 # ── Pipeline files ───────────────────────────
 echo "[6/6] Copying pipeline..."
