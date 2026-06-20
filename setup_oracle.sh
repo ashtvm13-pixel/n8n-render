@@ -9,7 +9,6 @@ echo "=== Veda Katha VM Setup ==="
 
 # ── System packages ──────────────────────────
 echo "[1/6] Installing system packages..."
-sudo dnf update -y -q
 sudo dnf install -y -q \
     curl git ImageMagick fontconfig \
     python3 python3-pip tmux unzip
