@@ -1,0 +1,338 @@
+{
+  "style_identity": {
+    "genre": "Sacred mythic cinematic art",
+    "aesthetic": "Premium mythic campaign key art — art-directed, cinematic, tactile, serious, atmospheric, emotionally weighty. Not generic AI fantasy with text added afterward.",
+    "realism_level": "A world of ritual, stone, fire, divinity, prophecy, memory, ruins, devotion, and silence. Treat deities as ancient beings photographed in sacred spaces with high-end cinema cameras.",
+    "mood": "Ancient, sacred, atmospheric, dangerous, emotionally weighty. Every frame should feel like it belongs in a temple hallway or a mythic cinematic epic."
+  },
+
+  "rendering": {
+    "quality": "Selective detail density — NOT uniform 8K everywhere",
+    "focal_detail": "Maximum detail on face, hands, weapon, sacred object, jewelry, eyes. These areas get full photorealistic treatment with subsurface scattering on skin.",
+    "secondary_areas": "Background and non-focal areas dissolve into smoke, darkness, painterly abstraction, atmospheric blur, or textured shadow. Do NOT render every area equally sharp or equally busy.",
+    "surface_treatment": "Tactile aged materials throughout — nothing looks new, clean, or digitally perfect",
+    "detail_focus": [
+      "Oil-lit skin with subsurface scattering — warm, lived-in, not plastic",
+      "Tarnished gold jewelry with scratches, oxidized bronze patina, worn gemstones",
+      "Rough-woven fabric with visible weave, frayed edges, dust-covered folds",
+      "Weathered stone, chipped carvings, soot-darkened temple walls, moss-covered surfaces",
+      "Weapons with battle-worn edges, engravings catching firelight, energy emanation"
+    ],
+    "anti_patterns": [
+      "NO plastic skin or smooth digital surfaces",
+      "NO clean fantasy armor or freshly polished objects",
+      "NO flat illustration or cartoon style",
+      "NO soft/dreamy fantasy glow or excessive bloom",
+      "NO clean studio lighting or stock photo aesthetic",
+      "NO sterile CGI perfection — everything must feel weathered and physical",
+      "NO candy saturation or neon colors",
+      "NO overexposed gold — gold should be tarnished, oxidized, ancient"
+    ]
+  },
+
+  "materials": {
+    "mandatory": "Every image must feature tactile aged materials. Surfaces should feel weathered, imperfect, and physical.",
+    "surface_types": [
+      "Chipped stone, cracked temple steps, cave rock, carved reliefs",
+      "Soot-darkened walls, smoke-stained architecture",
+      "Oxidized bronze, tarnished gold, scratched gold leaf",
+      "Worn jewelry with patina, rough-set gemstones",
+      "Rough cloth, hand-woven fabric, oil-stained cotton",
+      "Oil-lit skin, ash-marked skin, dust-covered skin",
+      "Moss, ash, dust, smoke residue on all surfaces",
+      "Hand-worked ornamentation, uneven worn edges",
+      "Grainy printed surfaces, wood grain, bark texture"
+    ],
+    "avoid": "Smooth digital surfaces, pristine metal, clean fabric, unblemished skin, freshly carved stone"
+  },
+
+  "lighting": {
+    "philosophy": "Use controlled darkness as a design tool. Let shadow hide non-essential areas, frame the subject, and create mystery. Avoid flat full-frame visibility. The image should reveal itself gradually.",
+    "source_rule": "Lighting must feel motivated by a believable or symbolic source — NEVER random ambient light. Prefer ONE dominant warm sacred light source against a colder dark environment.",
+    "motivated_sources": [
+      "Firelight from a temple doorway or ritual fire",
+      "Oil lamps, ritual lamps, brass diyas",
+      "A divine object glowing (chakra, weapon, sacred disc)",
+      "A cave opening or temple threshold",
+      "Low sun through dust and atmospheric haze",
+      "Lightning behind smoke or storm clouds",
+      "Burning embers, smoldering sacred fire",
+      "A hidden flame revealing partial details"
+    ],
+    "color_temperature": "Amber, antique gold, ember orange, or firelight warm tones against deep blue, green-black, charcoal, stone grey, or misty cyan cool shadows",
+    "fill": "Minimal — allow deep shadows on figure, crushed blacks acceptable. Shadow detail sacrificed for dramatic impact.",
+    "divine_glow": "Sacred weapons, chakras, and divine objects emit localized warm light that illuminates nearby skin and fabric — but restrained, not bloom-heavy",
+    "atmosphere_interaction": "Light scatters through particles — dust, smoke, ash, fog. Every scene has visible light interaction with atmospheric elements.",
+    "contrast": "Extreme contrast ratio. Deep shadows against focused highlights. Most of the frame can be dark.",
+    "avoid": "Random glow, excessive bloom, fake cinematic lighting, even illumination, multiple competing light sources, overlit scenes"
+  },
+
+  "color_palettes": {
+    "sacred_golden": {
+      "mood": "Triumph, revelation, divine power, heroic stands, sacred ceremonies, temple interiors",
+      "when": "Scene energy is victorious, radiant, or ceremonial. Character wielding or revealing divine weapon. Firelit temple scenes. Dawn/dusk.",
+      "primary": "Antique gold, dusty ochre, ember orange, oxidized bronze",
+      "accent": "Warm white-gold glow on divine objects — restrained, not overexposed",
+      "shadows": "Deep burnt sienna, dark chocolate brown, charcoal black",
+      "atmosphere": "Golden dust particles in firelight, warm smoke, incense haze, oil-lamp flicker"
+    },
+    "temple_blue": {
+      "mood": "Cosmic vastness, transcendence, sacred night, meditation, divine presence beyond mortal comprehension",
+      "when": "Scene energy is ethereal, contemplative, or cosmic. Night sky. Characters in meditative poses. Scenes emphasizing mystery and the unknowable.",
+      "primary": "Deep green-blue, cold cyan, stone grey with blue undertone",
+      "accent": "Pale silver-white moonlight, faint nebula hints",
+      "shadows": "Near-black navy, deep indigo, blue-charcoal",
+      "atmosphere": "Cold mist, faint star particles, moonlit fog, blue-grey smoke"
+    },
+    "ritual_fire": {
+      "mood": "Wrath, purification, intense combat, righteous fury, sacrificial fire, destruction and rebirth",
+      "when": "Scene involves fire, burning, sacred sacrifice, or intense rage. Active combat. Weapons striking. Devastation.",
+      "primary": "Deep crimson, dark maroon, ember orange — all desaturated slightly",
+      "accent": "White-hot fire cores in small areas only, flying sparks and embers",
+      "shadows": "Charcoal black, dark ash grey, soot-covered surfaces",
+      "atmosphere": "Rising smoke, floating embers, heat distortion, ritual fire glow, ash falling"
+    },
+    "storm_ancient": {
+      "mood": "Raw elemental force, divine intervention from sky, unstoppable natural power, apocalyptic events",
+      "when": "Scene involves storms, rain, lightning, wind, or sky-based divine power. Dramatic arrivals. High-voltage confrontations.",
+      "primary": "Cold blue-grey, storm charcoal, desaturated blue-white",
+      "accent": "Lightning flash — bright but brief, not neon. Crackling energy along edges.",
+      "shadows": "Near-black storm clouds, deep blue-grey, wet stone dark",
+      "atmosphere": "Rain streaks, lightning branches, mist rising from wet ground, wind-blown debris"
+    },
+    "earth_monument": {
+      "mood": "Timeless permanence, monumental scale, ancient legacy, stone-carved eternity, ruins and memory",
+      "when": "Scene emphasizes colossal scale or ancient presence. Mountain/cave settings. Characters shown as vast. Establishing shots. Endurance.",
+      "primary": "Muted stone grey, sandstone tan, weathered bronze, dusty ochre",
+      "accent": "Warm sunlight on stone edges — single source, not flooding",
+      "shadows": "Cool blue-grey atmospheric perspective, cave darkness",
+      "atmosphere": "Morning mist, distant haze, birds/debris for scale, dust motes in sunbeam"
+    },
+    "shadow_menace": {
+      "mood": "Menace, dread, corruption, overwhelming darkness, oppressive evil, cursed spaces",
+      "when": "Scene features antagonists, dark forces, ominous presence. Characters made of shadow/smoke. Villainous reveals. Impending doom.",
+      "primary": "Desaturated earth tones, sickly amber, dust brown, bone white accents",
+      "accent": "Glowing red/orange eyes — small points of color in vast darkness",
+      "shadows": "Deep murky shadows, oppressive near-total darkness",
+      "atmosphere": "Swirling dust storms, dark clouds forming shapes, creeping fog, suffocating smoke"
+    }
+  },
+
+  "composition": {
+    "figure_placement": "Figure dominates 60-80% of frame height — these are PORTRAITS of sacred beings, not landscapes with figures",
+    "focal_hierarchy": "Clear focal point within one second. Primary subject → secondary atmosphere → tertiary scale/story details. Image reveals itself gradually.",
+    "camera_angles": [
+      "Low-angle hero shot (most common — camera at waist/knee level looking up, makes figure monumental)",
+      "Extreme low angle (camera near ground, figure towers against sky/cave ceiling)",
+      "Back/three-quarter view (figure facing away, looking at something vast — mysterious, powerful)",
+      "Symmetrical frontal (for shrine/temple/ceremonial scenes — centered, formal, sacred)",
+      "Extreme close-up (face fills frame — for divine intensity, luminous eyes, emotional weight)"
+    ],
+    "depth": "Strong atmospheric perspective — foreground sharp, background dissolves into fog/mist/darkness/painterly abstraction",
+    "scale_devices": [
+      "Tiny humans or armies at figure's feet for colossal deity shots",
+      "Temple thresholds, cave openings, glowing doorways framing the subject",
+      "Mountains, ruins, vast landscapes as size reference",
+      "Birds/debris/smoke floating around figure for scale"
+    ],
+    "framing": "Portrait/vertical orientation (3:4), figure centered or slightly off-center",
+    "negative_space": "Use darkness, smoke, or atmospheric void — never cluttered backgrounds. Dark negative space is preferred over bright sky."
+  },
+
+  "atmospheric_effects": {
+    "mandatory": "Every image MUST have 3-4 atmospheric elements — this is the signature look. Atmosphere should HIDE areas and create mystery, not just float decoratively.",
+    "elements": [
+      "Volumetric fog/mist — swirling, ground-hugging, partially obscuring the figure",
+      "Floating dust/ash/pollen particles visible in light shafts",
+      "Sparks or embers rising from sacred fire or ground",
+      "Smoke — incense smoke, ritual fire smoke, battle smoke, atmospheric smoke",
+      "Flowing fabric edges dissolving into surrounding smoke/mist/darkness",
+      "God rays / crepuscular rays from ONE motivated source",
+      "Wind effects — hair streaming, fabric billowing, debris flying, ash swirling",
+      "Controlled darkness hiding portions of the scene"
+    ],
+    "density": "Medium-heavy — atmosphere should be thick enough to partially obscure parts of the figure, creating mystery and depth. Some areas of the image should be almost invisible.",
+    "avoid": "Crystal clear visibility, stock photo cleanness, decorative-only atmospheric effects that don't interact with the subject"
+  },
+
+  "character_rendering": {
+    "body_type": "Athletic, proportional — classical Indian temple sculpture physique, not bodybuilder",
+    "skin": "Oil-lit skin with subsurface scattering. Warm, lived-in, dust-touched. Character-appropriate tone (blue for Krishna/Vishnu avatars only). Skin should show the environment — firelight warmth, ash marks, dust.",
+    "hair": "Wild, wind-swept, flowing — individually rendered strands where focal. Matted/dreadlocked for ascetics. Hair interacts with wind and atmosphere.",
+    "expression": "Stoic, intense, focused — rarely smiling. Divine calm or fierce determination. Eyes tell the story.",
+    "pose": "Dynamic action or powerful stance — never static/stiff. Weight and momentum visible. Classical Indian sculpture influence in posture.",
+    "eyes": "If visible, intense and luminous — eyes should glow with subtle divine light. They are the focal anchor of the face. Shadows may frame them dramatically."
+  },
+
+  "clothing_and_ornaments": {
+    "base_garment": "Traditional dhoti (lower) and angavastra (upper drape) — fabric looks hand-woven, rough, lived-in. NOT pristine silk.",
+    "fabric_quality": "Rough-woven texture visible, natural draping with dust and wear. Fabric edges dissolve into surrounding atmosphere — cloth becomes smoke/mist at extremities.",
+    "fabric_colors": "Muted saffron, dusty white, aged cream, ochre — desaturated, never bright or saturated. Semi-transparent edges catching firelight.",
+    "jewelry": "Heavy ornate pieces with PATINA — arm bands (bajuband), necklaces (haar), crown/mukut, ear ornaments. Gold is tarnished/oxidized, not shiny. Gemstones are rough-set, not polished.",
+    "armor": "When present: ornate battle armor with Indian design motifs, battle-worn, dented, scratched. NOT clean or European/Western style.",
+    "sacred_marks": "Tilak, sacred thread (yagnopavita), ash marks (vibhuti for Shiva) — rendered as natural skin detail, slightly smudged from use"
+  },
+
+  "divine_weapons_and_objects": {
+    "rendering": "Weapons are characters themselves — they glow with restrained warm light, emit particles, affect surrounding lighting. But glow is controlled, not excessive bloom.",
+    "examples": {
+      "sudarshana_chakra": "Spinning golden disc with intricate mandala pattern, emitting warm amber light — aged gold, not shiny",
+      "trishul": "Shiva's trident — dark iron/bronze with energy crackling between prongs, lightning-wreathed",
+      "bow_and_arrow": "Massive ornate bow, battle-worn wood and metal, arrows tipped with ember-like energy",
+      "mace_gada": "Enormous stone/metal mace, ancient and heavy, ground cracking beneath its weight",
+      "flute_bansuri": "Krishna's flute — simple bamboo worn smooth by touch, surrounded by warm golden light particles",
+      "axe_parashu": "Massive battle axe, blade notched from use, handle gripped with visible force"
+    },
+    "energy_treatment": "Divine weapons emit warm localized light — amber/gold glow illuminating nearby skin and fabric. NOT neon, NOT excessive bloom. Restrained and sacred."
+  },
+
+  "texture_and_finish": {
+    "mandatory": "Every image must feel PHYSICAL, not digitally clean. Apply texture as a unifying finishing layer.",
+    "texture_types": [
+      "Subtle film grain — not heavy, but enough to avoid digital cleanness",
+      "Paper wear quality — slight warmth and imperfection",
+      "Dust and micro-scratches in the atmosphere",
+      "Ink irregularity — slight unevenness in tonal transitions",
+      "Aged surface noise — the image should feel like it was printed on weathered material"
+    ],
+    "post_processing": {
+      "color_grading": "Strong desaturated cinematic grade — antique gold/charcoal, or cold cyan/warm amber. Colors feel aged, smoky, sacred. NOT bright or saturated.",
+      "contrast": "Extreme contrast with crushed blacks. Shadow detail sacrificed for dramatic impact. Most of the frame can be very dark.",
+      "grain": "Visible film grain throughout — cinematic texture, not digital smoothness",
+      "vignette": "Strong darkening at edges, creating a tunnel effect drawing the eye to the focal point",
+      "bloom": "Minimal controlled bloom on sacred light sources only — never overblown. One small glow, not flooding.",
+      "sharpness": "Selectively sharp — face/weapon/hands sharp, everything else progressively softer"
+    }
+  },
+
+  "prompt_construction_guide": {
+    "structure": "[CHARACTER APPEARANCE — full sheet, skin tone first] + [SCENE ACTION — what they do, one motivated light source named] + [MATERIALS — what surfaces look like in this scene] + [PALETTE — name + actual colors spelled out] + [ATMOSPHERE — 3-4 specific effects] + [MANDATORY SUFFIX]",
+    "example_prompt": "Lord Krishna, luminous sapphire blue skin with warm firelight reflections, lean athletic build of classical temple sculpture, wild curly black hair with single peacock feather — hair strands catching amber light, wearing muted saffron dhoti with rough-woven texture and dust-covered folds, fabric edges dissolving into surrounding smoke, tarnished gold necklaces with oxidized patina, worn gold armlets, bamboo flute worn smooth by touch emitting warm golden light particles. Krishna stands at a weathered stone temple threshold, one hand raised in blessing, expression of intense divine calm — eyes luminous with subtle inner glow. Lit by a single brass oil lamp at his feet casting long upward shadows — warm amber firelight on his face and chest, the rest dissolving into deep temple darkness. Chipped stone walls with soot stains, carved reliefs partially obscured by centuries of incense smoke, cracked temple steps, moss in the crevices. Sacred golden palette — antique gold, dusty ochre, ember orange highlights, deep burnt sienna and charcoal shadows. Thick incense smoke swirling at waist level, golden dust particles floating in the single light shaft, fabric edges merging with smoke, controlled darkness hiding the temple interior beyond. Sacred mythic cinematic art, selective detail density — face and hands sharp rest dissolving into atmospheric darkness, tactile aged materials, one motivated warm light source, extreme contrast crushed blacks, visible film grain, strong vignette, physically textured finish.",
+    "mandatory_suffixes": [
+      "sacred mythic cinematic art",
+      "selective detail density",
+      "tactile aged materials",
+      "one motivated warm light source",
+      "extreme contrast crushed blacks",
+      "visible film grain",
+      "strong vignette",
+      "physically textured finish"
+    ]
+  },
+
+  "typography_layout": {
+    "note": "All values are % of final image dimensions. ImageMagick converts to pixels at composite time. This produces identical layout regardless of output resolution.",
+
+    "fader": {
+      "type": "continuous vertical gradient, fully transparent → dark — NO solid box/plateau anywhere. Opacity rises smoothly and only reaches its darkest at the very bottom edge.",
+      "start_y": "52%H",
+      "end_y": "100%H",
+      "solid_base_from": "none — never a flat solid block; it must keep fading continuously to the bottom",
+      "color": "#1A1A1A",
+      "max_opacity": "~95% at bottom edge only"
+    },
+
+    "text_column": {
+      "left_margin": "6%W",
+      "right_margin": "6%W",
+      "column_width": "88%W",
+      "bottom_baseline": "96%H",
+      "alignment": "left"
+    },
+
+    "narration": {
+      "applies_to": "all slides (slides 1–5)",
+      "font": "clean sans-serif (Noto Sans), regular weight, upright — chosen for readability over the image",
+      "size": "3.2%H",
+      "line_height": "150%",
+      "letter_spacing": "0.02em",
+      "color": "#F2EBD9",
+      "opacity": "92%",
+      "max_lines": 3,
+      "position": "bottom — text baseline at 96%H, stacks upward",
+      "wrap_width": "88%W"
+    },
+
+    "hero_title": {
+      "applies_to": "slide 1 only",
+      "font": "Cinzel Bold",
+      "size": "6.5%H",
+      "letter_spacing": "0.12em",
+      "color": "#F2EBD9",
+      "opacity": "100%",
+      "case": "ALL CAPS",
+      "position": "sits above narration block with gap = 1× narration font size",
+      "wrap_width": "88%W"
+    },
+
+    "imagemagick_reference": {
+      "note": "Convert % to px at runtime: size_px = round(pct * img_height / 100)",
+      "fader_cmd": "convert {input} \\( -size {W}x{fader_h}px gradient:'rgba(26,26,26,0)-#1A1A1A' \\) -geometry +0+{fader_y} -composite",
+      "narration_cmd": "convert {img} -font 'Noto-Sans' -pointsize {narr_pt} -fill '#F2EBD9' -draw 'text {lm},{baseline} \"{text}\"'",
+      "title_cmd": "convert {img} -font 'Cinzel-Bold' -pointsize {title_pt} -fill '#F2EBD9' -kerning 4 -draw 'text {lm},{title_y} \"{TITLE}\"'"
+    }
+  },
+
+  "style_modes": {
+    "note": "Each image picks ONE mode. Pass mode name in prompt as part of MANDATORY SUFFIX. Modes share all base rules (materials, composition, character rendering) — they differ only in lighting philosophy and color treatment.",
+
+    "original": {
+      "name": "Sacred Cinematic",
+      "lighting_philosophy": "Motivated sacred light sources — temple firelight, oil lamps, divine objects. Warm amber against cool dark. Light feels ceremonial and symbolic. Multiple warm sources acceptable if they share one dominant direction. God rays and atmospheric scatter encouraged.",
+      "contrast": "High but not absolute — some shadow detail preserved. Crushed blacks at periphery, mid-range visible in atmospheric zones.",
+      "color_feel": "Warm golden sacred tones dominate. Amber, ochre, antique gold, ember orange against deep blue-green shadows. Colors feel aged and sacred.",
+      "atmosphere": "Dense and decorative — incense smoke, god rays, floating particles, fabric dissolving into mist. Atmosphere fills the frame.",
+      "skin": "Oil-lit warmth. Firelight on face. Subsurface scattering visible. Warm and glowing at focal point.",
+      "when_to_use": "Temple scenes, ceremonial moments, deity reveals, divine weapon use, sacred rituals, triumphant moments, devotional scenes",
+      "mandatory_suffix_addition": "sacred cinematic mode, motivated warm light source, atmospheric smoke and particles, sacred golden palette"
+    },
+
+    "caravaggio_blend": {
+      "name": "Caravaggio Tenebrism",
+      "lighting_philosophy": "TENEBRISM — one single brutal light shaft cutting through absolute darkness. 80% of the frame is pure black or near-black. The light source is off-screen, hitting the subject from one sharp angle (typically top-left or side). No ambient fill. No atmospheric scatter decorating the background. Darkness is not shadow — it is void.",
+      "contrast": "Absolute — pure black (#0a0a0a) vs sharply lit skin/surface. Zero mid-range in background areas. Only the subject has tonal range. Crushed blacks are not a grade — they are the actual background.",
+      "color_feel": "Desaturated near monochrome with one warm note. Skin gets warm amber/ochre from the single light. Everything else: cold near-black with no color identity. No golden atmosphere, no ambient color tinting the darkness.",
+      "atmosphere": "None in background — atmosphere only at the very edge of the light zone (thin wisp of smoke catching the light shaft, a breath of haze at the boundary). Darkness is clean, not foggy.",
+      "skin": "Hyper-real. Subsurface scattering on ears and nose tips. Pores, stubble, fine hair visible. Sweat on forehead where light hits. The lit side is warm amber-ivory, the shadow side goes directly to black with a thin cool blue rim only if a secondary environmental source exists. Skin weight — no CGI smoothness.",
+      "when_to_use": "Intense emotional moments, villain reveals, confrontations, grief or despair, moral weight scenes, a character alone with darkness, moments of decision or sacrifice, any scene where the emotion is raw and private",
+      "mandatory_suffix_addition": "Caravaggio tenebrism mode, single off-screen light shaft, 80% absolute black background, zero ambient fill, hyper-real skin subsurface scattering, no atmospheric scatter in background"
+    },
+
+    "blend_50_50": {
+      "name": "Sacred Tenebrism",
+      "description": "Hybrid — use this when a scene needs BOTH mythic atmosphere AND Caravaggio weight. Sacred context but brutal emotional truth.",
+      "lighting_philosophy": "One sacred motivated source (temple fire, divine object, single lamp) — but treated with Caravaggio discipline. The source is small and specific, not ambient. Background goes to 70-80% black. Atmospheric effects exist ONLY in the lit zone — smoke catching the single light, particles visible only where light hits. Darkness behind is clean black.",
+      "contrast": "Very high — closer to Caravaggio than original. Background near-black, lit areas extremely precise.",
+      "color_feel": "The warm amber of sacred fire, but tight — only on the figure. Shadow side goes cold-black. No golden atmospheric tinting. One small glowing divine object or flame is the only warm accent in darkness.",
+      "atmosphere": "Minimal and localized — incense smoke only where the light shaft reveals it. God rays only if they emerge from a single point source. No general atmospheric haze.",
+      "skin": "Hyper-real in lit area. Oil lamp warmth on face and hands. Shadow side: clean dark transition, no fill.",
+      "when_to_use": "Default for most mythic scenes — gets the tactile sacred quality AND emotional weight. Best for protagonist slides 2-4.",
+      "mandatory_suffix_addition": "sacred tenebrism mode, one motivated light source Caravaggio treatment, 70% near-black background, atmospheric effects only in lit zone, hyper-real skin"
+    }
+  },
+
+  "style_mode_selection_guide": {
+    "slide_1_hero": "original — atmospheric reveal, full sacred mood, sets the world",
+    "slide_2_rising": "blend_50_50 — character in context, weight building",
+    "slide_3_turning": "caravaggio_blend — emotional hinge, maximum rawness",
+    "slide_4_climax": "caravaggio_blend — peak confrontation or sacrifice, brutal lighting",
+    "slide_5_resolution": "blend_50_50 or original — depends on emotional tone. Grief → blend. Triumph → original."
+  },
+
+  "text_band_template_id": "8d6e1c53-5080-4fcf-b7c9-8f7286f40fb9",
+  "text_band_template_note": "Pre-rendered 880x1168 PNG: continuous transparent→dark fade from 52%H to bottom edge, NO solid box. Pass as generate_image medias[] with role 'image'. Model renders text INSIDE the faded zone — locks vertical position. Combine with fixed-length narration + pre-broken lines to also lock horizontal margin.",
+
+  "narration_consistency_rules": {
+    "why": "GPT-Image-2 paints text, cannot honor pixel coords. Consistency comes from: (1) band template as image ref locks vertical, (2) identical character count locks font size, (3) pre-broken fixed-width lines lock horizontal margin.",
+    "target_char_count": 145,
+    "tolerance": "140-150 chars — pad or trim every narration to land in this window",
+    "max_chars_per_line": 42,
+    "lines": 3,
+    "rule": "Write each narration to ~145 chars, then split into exactly 3 lines of <=42 chars each at word boundaries. Pass the pre-broken lines to the image prompt so the model does not stretch text edge-to-edge.",
+    "margin_instruction": "Leave a clear left margin of about 6% of width — text must NOT touch the left edge. Leave a matching empty margin on the right. Left-aligned within that column."
+  },
+
+  "reference_element_id": "92fa2bf7-f86d-4b0a-ba5a-1dc0792bcf52",
+  "reference_element_name": "vedic-vibes-style",
+  "usage_note": "Combine this style JSON with <<<92fa2bf7-f86d-4b0a-ba5a-1dc0792bcf52>>> in every image prompt. The JSON provides explicit textual guidance while the reference element provides visual pattern matching from the 59 uploaded reference images."
+}
