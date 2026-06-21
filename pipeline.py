@@ -226,7 +226,9 @@ def run_claude(prompt, timeout=1200):
 
     try:
         result = subprocess.run(
-            ["claude", "-p", prompt, "--output-format", "json", "--max-turns", "1", "--allowed-tools", ""],
+            ["claude", "-p", prompt, "--output-format", "json",
+             "--max-turns", "1", "--allowed-tools", "",
+             "--model", "claude-haiku-4-5-20251001"],
             capture_output=True, text=True,
             timeout=timeout, env=env
         )
