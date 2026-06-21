@@ -227,7 +227,7 @@ def run_claude(prompt, timeout=1200):
     try:
         proc = subprocess.Popen(
             ["claude", "-p", prompt, "--output-format", "json",
-             "--max-turns", "1", "--allowed-tools", "",
+             "--max-turns", "1",
              "--model", "claude-haiku-4-5-20251001"],
             stdout=subprocess.PIPE, stderr=None,  # stderr streams live to terminal
             text=True, env=env
@@ -244,10 +244,18 @@ def run_claude(prompt, timeout=1200):
     log(f"[claude] Finished in {elapsed}s. Return code: {proc.returncode}")
 
     if proc.returncode != 0:
-        raise RuntimeError(f"Claude CLI failed (rc={proc.returncode}). See stderr above.")
+        log(f"[claude] stdout: {stdout[:800]}")
+        raise RuntimeError(f"Claude CLI failed (rc={proc.returncode}).")
 
     log(f"[claude] Raw stdout length: {len(stdout)} chars")
-    cli_out = json.loads(stdout)
+    try:
+        cli_out = json.loads(stdout)
+    except json.JSONDecodeError:
+        log(f"[claude] Non-JSON stdout: {stdout[:500]}")
+        raise RuntimeError("Claude CLI returned non-JSON output.")
+    if cli_out.get("is_error"):
+        log(f"[claude] Error in response: {json.dumps(cli_out.get('errors', []))}")
+        raise RuntimeError(f"Claude returned error: {cli_out.get('errors')}")
     return cli_out.get("result", "")
 
 
