@@ -135,15 +135,8 @@ STEP 5: Each narration (except slide 5) must end on tension that compels swipe."
   ]
 }"""
 
-    image_instructions = f"""AFTER generating JSON, submit all 5 images to Higgsfield.
-
-For EACH slide call generate_image:
-- model: "gpt_image_2"
-- aspect_ratio: "3:4"
-- quality: "medium"
-- NO TEXT in images. Pure visual art only.
-
-BUILD EACH IMAGE PROMPT:
+    image_prompt_rules = """
+For EACH slide, write a "image_prompt" field with a complete Higgsfield image prompt:
 
 --- CHARACTER ---
 [Full name], [EXACT skin tone + light interaction], [build], [hair in atmosphere], wearing [worn garment with frayed edges dissolving into fog], [tarnished gold jewelry], [ALL deity attributes]. [Divine weapon if present].
@@ -172,21 +165,20 @@ LIGHTING SETUP:
   Interaction: light scatters through volumetric fog creating god rays
   Contrast: extreme — most frame dark, light reveals only subject
 
---- ATMOSPHERE (3-4 elements) ---
-- VOLUMETRIC FOG — thick, swirling, ground-hugging, hides ground and lower body (MANDATORY)
+--- ATMOSPHERE (3-4 elements, ALL mandatory) ---
+- VOLUMETRIC FOG — thick, swirling, ground-hugging, hides ground and lower body
 - Floating dust/ash particles in the single light shaft
 - Smoke — incense, ritual fire, atmospheric
-- Fabric edges dissolving into surrounding smoke and fog
 - God rays cutting through volumetric fog
-- Wind effects — hair streaming, fabric billowing
 
 --- MANDATORY FEEL ---
-Sacred mythic cinematic art matching vedic-vibes-style reference. Volumetric fog throughout. Selective detail — face and hands sharp, background dissolves. Tactile aged materials. One motivated warm light source. Extreme contrast crushed blacks. Film grain. Strong vignette. Ancient, sacred, emotionally weighty. Apply style from <<<{REF_ELEMENT_ID}>>>.
-Keep bottom ~30% darker/atmospheric for text overlay.
+Sacred mythic cinematic art. Volumetric fog throughout. Selective detail — face and hands sharp, background dissolves. Tactile aged materials. One motivated warm light source. Extreme contrast crushed blacks. Film grain. Strong vignette. Ancient, sacred, emotionally weighty.
+Keep bottom 30% darker/atmospheric for text overlay. NO TEXT in image."""
 
-After ALL 5 jobs submitted, return ONLY:
-{{"content": {{...full story JSON...}}, "job_ids": ["uuid1","uuid2","uuid3","uuid4","uuid5"]}}
-No markdown. No explanation."""
+    json_schema = json_schema.replace(
+        '"scene": "Character appearance first (verbatim from sheet), then action, environment, emotion."',
+        '"scene": "Character appearance first (verbatim from sheet), then action, environment, emotion.",\n      "image_prompt": "Complete self-contained image generation prompt following the rules above."'
+    )
 
     return (
         content_instructions
@@ -194,10 +186,11 @@ No markdown. No explanation."""
         + recent
         + "\n\nCreate an original Instagram CAROUSEL from Hindu Puranas, Upanishads, Bhagavad Gita, or Vedic tradition.\n\n"
         + carousel_thinking
+        + "\n\nIMAGE PROMPT RULES (include image_prompt in each slide):\n"
+        + image_prompt_rules
         + "\n\nOUTPUT FORMAT — respond ONLY with this JSON:\n"
         + json_schema
-        + "\n\n"
-        + image_instructions
+        + "\nNo markdown. No explanation."
     )
 
 
@@ -225,44 +218,55 @@ def run_claude(prompt, timeout=1200):
     return cli_out.get("result", "")
 
 
-def poll_images(job_ids, timeout=600):
-    print(f"[poll] Polling {len(job_ids)} Higgsfield jobs...")
-    poll_prompt = f"""Check status of these Higgsfield image generation jobs using job_status tool for EACH job ID.
+def generate_images(slides, timeout=1200):
+    print(f"[higgsfield] Generating {len(slides)} images via CLI...")
+    job_ids = []
 
-Job IDs: {json.dumps(job_ids)}
+    for i, slide in enumerate(slides):
+        prompt = slide.get("image_prompt") or slide.get("scene", "")
+        if not prompt:
+            raise RuntimeError(f"Slide {i+1} has no image prompt")
 
-POLLING PROCEDURE:
-1. Call job_status for EACH job ID
-2. If ALL jobs completed with image URLs → proceed
-3. If ANY still in_progress → wait and retry. Repeat up to 15 times with waits.
-4. Return ONLY a JSON array of completed image URLs in SAME ORDER as job IDs:
-["https://url1","https://url2","https://url3","https://url4","https://url5"]
+        print(f"[higgsfield] Submitting slide {i+1}...")
+        result = subprocess.run(
+            ["higgsfield", "generate", "create", "openai_hazel",
+             "--prompt", prompt,
+             "--aspect-ratio", "3:4",
+             "--json"],
+            capture_output=True, text=True, timeout=60
+        )
+        if result.returncode != 0:
+            raise RuntimeError(f"Higgsfield submit failed slide {i+1}: {result.stderr[:300]}")
 
-If a job fails after all retries, put "FAILED" as placeholder.
-Return ONLY the JSON array. No markdown. No explanation."""
+        out = json.loads(result.stdout)
+        job_id = out.get("id") or out.get("job_id") or out.get("jobId")
+        if not job_id:
+            raise RuntimeError(f"No job ID in response: {result.stdout[:200]}")
+        job_ids.append(job_id)
+        print(f"[higgsfield] Slide {i+1} job: {job_id}")
+        time.sleep(2)
 
-    prompt_file = TMP_DIR / "poll_prompt.txt"
-    prompt_file.write_text(poll_prompt)
+    print(f"[higgsfield] Waiting for {len(job_ids)} jobs...")
+    image_urls = []
+    for i, job_id in enumerate(job_ids):
+        print(f"[higgsfield] Waiting for slide {i+1} ({job_id})...")
+        result = subprocess.run(
+            ["higgsfield", "generate", "wait", job_id, "--json"],
+            capture_output=True, text=True, timeout=timeout
+        )
+        if result.returncode != 0:
+            raise RuntimeError(f"Higgsfield wait failed slide {i+1}: {result.stderr[:300]}")
 
-    env = os.environ.copy()
-    env["NO_COLOR"] = "1"
+        out = json.loads(result.stdout)
+        url = (out.get("output") or {}).get("url") or \
+              out.get("url") or out.get("image_url") or \
+              (out.get("outputs") or [{}])[0].get("url")
+        if not url:
+            raise RuntimeError(f"No URL in job result: {result.stdout[:300]}")
+        image_urls.append(url)
+        print(f"[higgsfield] Slide {i+1} done: {url[:60]}...")
 
-    result = subprocess.run(
-        f"cat {prompt_file} | claude --output-format json",
-        shell=True, capture_output=True, text=True,
-        timeout=timeout, env=env
-    )
-    if result.returncode != 0:
-        raise RuntimeError(f"Poll CLI failed: {result.stderr[:500]}")
-
-    cli_out = json.loads(result.stdout)
-    output = cli_out.get("result", "")
-
-    match = re.search(r'\[[\s\S]*?\]', output)
-    if match:
-        urls = json.loads(match.group(0))
-        return urls
-    raise RuntimeError(f"Could not parse image URLs from: {output[:300]}")
+    return image_urls
 
 
 # ─────────────────────────────────────────────
@@ -285,13 +289,7 @@ def parse_output(raw):
 
     parsed = safe_parse(raw.strip())
 
-    if "content" in parsed and "job_ids" in parsed:
-        content = parsed["content"]
-        job_ids = parsed["job_ids"]
-    else:
-        content = parsed
-        job_ids = parsed.get("job_ids", [])
-
+    content = parsed.get("content", parsed)
     content["post_type"] = "carousel"
     if not isinstance(content.get("hashtags"), list):
         content["hashtags"] = []
@@ -323,13 +321,10 @@ def parse_output(raw):
             "narration": narration,
             "narration_lines": lines,
             "scene": s.get("scene", ""),
+            "image_prompt": s.get("image_prompt", ""),
         })
     content["slides"] = normalized
-
-    UUID_RE = re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', re.I)
-    valid_ids = [j for j in job_ids if UUID_RE.match(str(j))]
-
-    return content, valid_ids
+    return content
 
 
 # ─────────────────────────────────────────────
@@ -532,16 +527,17 @@ def main():
     prompt = build_prompt()
     raw = run_claude(prompt)
 
-    # 2. Parse content + job IDs
-    content, job_ids = parse_output(raw)
-    print(f"[parse] Story: '{content.get('title')}' | Jobs: {len(job_ids)}")
+    # 2. Parse content
+    content = parse_output(raw)
+    print(f"[parse] Story: '{content.get('title')}' | Slides: {len(content.get('slides', []))}")
 
-    if not job_ids:
-        raise RuntimeError("No Higgsfield job IDs returned. Check Claude output.")
+    slides = content.get("slides", [])
+    if not slides:
+        raise RuntimeError("No slides in content. Check Claude output.")
 
-    # 3. Poll for image URLs
-    image_urls = poll_images(job_ids)
-    print(f"[poll] Got {len(image_urls)} URLs")
+    # 3. Generate images via Higgsfield CLI
+    image_urls = generate_images(slides)
+    print(f"[higgsfield] Got {len(image_urls)} image URLs")
 
     failed = [u for u in image_urls if not str(u).startswith("http")]
     if failed:
