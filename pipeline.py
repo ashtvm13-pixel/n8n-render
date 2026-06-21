@@ -225,25 +225,29 @@ def run_claude(prompt, timeout=1200):
     t.start()
 
     try:
-        result = subprocess.run(
+        proc = subprocess.Popen(
             ["claude", "-p", prompt, "--output-format", "json",
              "--max-turns", "1", "--allowed-tools", "",
              "--model", "claude-haiku-4-5-20251001"],
-            capture_output=True, text=True,
-            timeout=timeout, env=env
+            stdout=subprocess.PIPE, stderr=None,  # stderr streams live to terminal
+            text=True, env=env
         )
+        try:
+            stdout, _ = proc.communicate(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            raise
     finally:
         stop_heartbeat.set()
 
     elapsed = int(time.time() - start)
-    log(f"[claude] Finished in {elapsed}s. Return code: {result.returncode}")
+    log(f"[claude] Finished in {elapsed}s. Return code: {proc.returncode}")
 
-    if result.returncode != 0:
-        log(f"[claude] STDERR: {result.stderr[:500]}")
-        raise RuntimeError(f"Claude CLI failed: {result.stderr[:1000]}")
+    if proc.returncode != 0:
+        raise RuntimeError(f"Claude CLI failed (rc={proc.returncode}). See stderr above.")
 
-    log(f"[claude] Raw stdout length: {len(result.stdout)} chars")
-    cli_out = json.loads(result.stdout)
+    log(f"[claude] Raw stdout length: {len(stdout)} chars")
+    cli_out = json.loads(stdout)
     return cli_out.get("result", "")
 
 
