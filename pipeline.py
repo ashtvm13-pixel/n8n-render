@@ -205,7 +205,7 @@ No markdown. No explanation."""
 # CLAUDE CLI
 # ─────────────────────────────────────────────
 
-def run_claude(prompt, timeout=600):
+def run_claude(prompt, timeout=1200):
     print("[claude] Running pipeline via Claude CLI...")
     prompt_file = TMP_DIR / "prompt.txt"
     prompt_file.write_text(prompt)
