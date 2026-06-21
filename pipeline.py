@@ -207,7 +207,7 @@ def run_claude(prompt, timeout=1200):
     env["NO_COLOR"] = "1"
 
     result = subprocess.run(
-        f"cat {prompt_file} | claude --output-format json",
+        f"claude -p \"$(cat {prompt_file})\" --output-format json",
         shell=True, capture_output=True, text=True,
         timeout=timeout, env=env
     )
