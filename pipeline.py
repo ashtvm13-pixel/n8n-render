@@ -226,8 +226,8 @@ def run_claude(prompt, timeout=1200):
 
     try:
         result = subprocess.run(
-            f"claude -p \"$(cat {prompt_file})\" --output-format json",
-            shell=True, capture_output=True, text=True,
+            ["claude", "-p", prompt, "--output-format", "json"],
+            capture_output=True, text=True,
             timeout=timeout, env=env
         )
     finally:
