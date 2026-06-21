@@ -15,12 +15,18 @@ import os
 import re
 import subprocess
 import sys
+import threading
 import time
 import urllib.request
 import urllib.parse
 import textwrap
 from datetime import datetime
 from pathlib import Path
+
+
+def log(msg):
+    ts = datetime.now().strftime("%H:%M:%S")
+    print(f"[{ts}] {msg}", flush=True)
 
 # ─────────────────────────────────────────────
 # CONFIG — edit these
@@ -45,8 +51,8 @@ TMP_DIR  = Path("/tmp/veda_pipeline")
 def load_recent_posts(n=15):
     if not LOG_FILE.exists():
         return "No recent posts. Full creative freedom."
-    log = json.loads(LOG_FILE.read_text())
-    rows = log[-n:]
+    entries = json.loads(LOG_FILE.read_text())
+    rows = entries[-n:]
     if not rows:
         return "No recent posts. Full creative freedom."
     lines = [f"{i+1}. Title: {r.get('title','')} | Theme: {r.get('theme','')} | Source: {r.get('source','')}"
@@ -199,27 +205,48 @@ Keep bottom 30% darker/atmospheric for text overlay. NO TEXT in image."""
 # ─────────────────────────────────────────────
 
 def run_claude(prompt, timeout=1200):
-    print("[claude] Running pipeline via Claude CLI...")
+    log("[claude] Starting Claude CLI — generating story JSON...")
     prompt_file = TMP_DIR / "prompt.txt"
     prompt_file.write_text(prompt)
+    log(f"[claude] Prompt written ({len(prompt)} chars). Calling claude -p ...")
 
     env = os.environ.copy()
     env["NO_COLOR"] = "1"
 
-    result = subprocess.run(
-        f"claude -p \"$(cat {prompt_file})\" --output-format json",
-        shell=True, capture_output=True, text=True,
-        timeout=timeout, env=env
-    )
+    start = time.time()
+    stop_heartbeat = threading.Event()
+
+    def heartbeat():
+        while not stop_heartbeat.wait(30):
+            elapsed = int(time.time() - start)
+            log(f"[claude] Still waiting... ({elapsed}s elapsed)")
+
+    t = threading.Thread(target=heartbeat, daemon=True)
+    t.start()
+
+    try:
+        result = subprocess.run(
+            f"claude -p \"$(cat {prompt_file})\" --output-format json",
+            shell=True, capture_output=True, text=True,
+            timeout=timeout, env=env
+        )
+    finally:
+        stop_heartbeat.set()
+
+    elapsed = int(time.time() - start)
+    log(f"[claude] Finished in {elapsed}s. Return code: {result.returncode}")
+
     if result.returncode != 0:
+        log(f"[claude] STDERR: {result.stderr[:500]}")
         raise RuntimeError(f"Claude CLI failed: {result.stderr[:1000]}")
 
+    log(f"[claude] Raw stdout length: {len(result.stdout)} chars")
     cli_out = json.loads(result.stdout)
     return cli_out.get("result", "")
 
 
 def generate_images(slides, timeout=1200):
-    print(f"[higgsfield] Generating {len(slides)} images via CLI...")
+    log(f"[higgsfield] Generating {len(slides)} images via CLI...")
     job_ids = []
 
     for i, slide in enumerate(slides):
@@ -227,7 +254,7 @@ def generate_images(slides, timeout=1200):
         if not prompt:
             raise RuntimeError(f"Slide {i+1} has no image prompt")
 
-        print(f"[higgsfield] Submitting slide {i+1}...")
+        log(f"[higgsfield] Submitting slide {i+1}...")
         result = subprocess.run(
             ["higgsfield", "generate", "create", "openai_hazel",
              "--prompt", prompt,
@@ -243,13 +270,13 @@ def generate_images(slides, timeout=1200):
         if not job_id:
             raise RuntimeError(f"No job ID in response: {result.stdout[:200]}")
         job_ids.append(job_id)
-        print(f"[higgsfield] Slide {i+1} job: {job_id}")
+        log(f"[higgsfield] Slide {i+1} job: {job_id}")
         time.sleep(2)
 
-    print(f"[higgsfield] Waiting for {len(job_ids)} jobs...")
+    log(f"[higgsfield] Waiting for {len(job_ids)} jobs...")
     image_urls = []
     for i, job_id in enumerate(job_ids):
-        print(f"[higgsfield] Waiting for slide {i+1} ({job_id})...")
+        log(f"[higgsfield] Waiting for slide {i+1} ({job_id})...")
         result = subprocess.run(
             ["higgsfield", "generate", "wait", job_id, "--json"],
             capture_output=True, text=True, timeout=timeout
@@ -264,7 +291,7 @@ def generate_images(slides, timeout=1200):
         if not url:
             raise RuntimeError(f"No URL in job result: {result.stdout[:300]}")
         image_urls.append(url)
-        print(f"[higgsfield] Slide {i+1} done: {url[:60]}...")
+        log(f"[higgsfield] Slide {i+1} done: {url[:60]}...")
 
     return image_urls
 
@@ -441,7 +468,7 @@ def ig_post(image_urls, caption):
     token = IG_ACCESS_TOKEN
     uid = IG_USER_ID
 
-    print(f"[instagram] Creating {len(image_urls)} container(s)...")
+    log(f"[instagram] Creating {len(image_urls)} container(s)...")
     container_ids = []
     for url in image_urls:
         params = urllib.parse.urlencode({
@@ -458,7 +485,7 @@ def ig_post(image_urls, caption):
         container_ids.append(cid)
         time.sleep(1)
 
-    print(f"[instagram] Containers: {container_ids}")
+    log(f"[instagram] Containers: {container_ids}")
     time.sleep(5)
 
     params = urllib.parse.urlencode({
@@ -474,7 +501,7 @@ def ig_post(image_urls, caption):
     if not carousel_id:
         raise RuntimeError(f"Failed to create carousel: {res}")
 
-    print(f"[instagram] Carousel container: {carousel_id}. Waiting...")
+    log(f"[instagram] Carousel container: {carousel_id}. Waiting...")
     time.sleep(10)
 
     params = urllib.parse.urlencode({
@@ -486,7 +513,7 @@ def ig_post(image_urls, caption):
         res = json.loads(r.read())
 
     post_id = res.get("id")
-    print(f"[instagram] Posted! ID: {post_id}")
+    log(f"[instagram] Posted! ID: {post_id}")
     return post_id
 
 
@@ -519,9 +546,9 @@ def main():
 
     TMP_DIR.mkdir(parents=True, exist_ok=True)
 
-    print(f"\n{'='*50}")
-    print(f"Veda Katha Pipeline — {datetime.now().strftime('%Y-%m-%d %H:%M')}")
-    print(f"{'='*50}\n")
+    print(f"\n{'='*50}", flush=True)
+    print(f"Veda Katha Pipeline — {datetime.now().strftime('%Y-%m-%d %H:%M')}", flush=True)
+    print(f"{'='*50}\n", flush=True)
 
     # 1. Build + run prompt
     prompt = build_prompt()
@@ -529,7 +556,7 @@ def main():
 
     # 2. Parse content
     content = parse_output(raw)
-    print(f"[parse] Story: '{content.get('title')}' | Slides: {len(content.get('slides', []))}")
+    log(f"[parse] Story: '{content.get('title')}' | Slides: {len(content.get('slides', []))}")
 
     slides = content.get("slides", [])
     if not slides:
@@ -537,7 +564,7 @@ def main():
 
     # 3. Generate images via Higgsfield CLI
     image_urls = generate_images(slides)
-    print(f"[higgsfield] Got {len(image_urls)} image URLs")
+    log(f"[higgsfield] Got {len(image_urls)} image URLs")
 
     failed = [u for u in image_urls if not str(u).startswith("http")]
     if failed:
@@ -553,25 +580,26 @@ def main():
         raw_file   = str(TMP_DIR / f"raw_{slide_num}.png")
         final_file = str(TMP_DIR / f"final_{slide_num}.png")
 
-        print(f"[composite] Slide {slide_num}: downloading...")
+        log(f"[composite] Slide {slide_num}: downloading...")
         urllib.request.urlretrieve(url, raw_file)
 
-        print(f"[composite] Slide {slide_num}: compositing text...")
+        log(f"[composite] Slide {slide_num}: compositing text...")
         composite_text(raw_file, final_file, slide_num, slides, story_title)
 
-        print(f"[composite] Slide {slide_num}: uploading to imgbb...")
+        log(f"[composite] Slide {slide_num}: uploading to imgbb...")
         hosted_url = upload_imgbb(final_file)
         final_urls.append(hosted_url)
-        print(f"[composite] Slide {slide_num}: {hosted_url}")
+        log(f"[composite] Slide {slide_num}: {hosted_url}")
 
     # 5. Build caption
     hashtags = " ".join(f"#{h.lstrip('#')}" for h in content.get("hashtags", []))
     caption = content.get("caption", "") + ("\n\n" + hashtags if hashtags else "")
 
     if args.dry_run:
-        print("\n[dry-run] Skipping Instagram post.")
-        print(f"Caption preview:\n{caption[:300]}...")
-        print(f"Image URLs: {final_urls}")
+        log("[dry-run] Skipping Instagram post.")
+        log(f"Caption preview: {caption[:300]}...")
+        log(f"Image URLs: {final_urls}")
+        log("[dry-run] COMPLETE — all steps passed.")
         return
 
     # 6. Post to Instagram
@@ -579,7 +607,7 @@ def main():
 
     # 7. Log
     log_post(content, post_id)
-    print(f"\n✓ Done — post ID {post_id}")
+    log(f"DONE — post ID {post_id}")
 
 
 if __name__ == "__main__":
