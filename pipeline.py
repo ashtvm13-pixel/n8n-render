@@ -280,9 +280,12 @@ def generate_images(slides, timeout=1200):
             raise RuntimeError(f"Higgsfield submit failed slide {i+1}: {result.stderr[:300]}")
 
         out = json.loads(result.stdout)
+        log(f"[higgsfield] Raw response: {result.stdout[:300]}")
+        if isinstance(out, list):
+            out = out[0] if out else {}
         job_id = out.get("id") or out.get("job_id") or out.get("jobId")
         if not job_id:
-            raise RuntimeError(f"No job ID in response: {result.stdout[:200]}")
+            raise RuntimeError(f"No job ID in response: {result.stdout[:300]}")
         job_ids.append(job_id)
         log(f"[higgsfield] Slide {i+1} job: {job_id}")
         time.sleep(2)
