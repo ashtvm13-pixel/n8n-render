@@ -267,6 +267,7 @@ def generate_images(slides, timeout=1200):
         prompt = slide.get("image_prompt") or slide.get("scene", "")
         if not prompt:
             raise RuntimeError(f"Slide {i+1} has no image prompt")
+        prompt = f"<<<{REF_ELEMENT_ID}>>> {prompt}"
 
         log(f"[higgsfield] Submitting slide {i+1}/{len(slides)} (waiting for result)...")
         result = subprocess.run(
