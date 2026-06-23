@@ -260,15 +260,15 @@ def run_claude(prompt, timeout=1200):
 
 
 def generate_images(slides, timeout=1200):
-    log(f"[higgsfield] Generating {len(slides)} images via CLI...")
-    job_ids = []
+    log(f"[higgsfield] Generating {len(slides)} images sequentially...")
+    image_urls = []
 
     for i, slide in enumerate(slides):
         prompt = slide.get("image_prompt") or slide.get("scene", "")
         if not prompt:
             raise RuntimeError(f"Slide {i+1} has no image prompt")
 
-        log(f"[higgsfield] Submitting slide {i+1}...")
+        log(f"[higgsfield] Submitting slide {i+1}/{len(slides)}...")
         result = subprocess.run(
             ["higgsfield", "generate", "create", "gpt_image_2",
              "--prompt", prompt,
@@ -288,14 +288,8 @@ def generate_images(slides, timeout=1200):
             job_id = str(out) if out else None
         if not job_id:
             raise RuntimeError(f"No job ID in response: {result.stdout[:300]}")
-        job_ids.append(job_id)
-        log(f"[higgsfield] Slide {i+1} job: {job_id}")
-        time.sleep(2)
+        log(f"[higgsfield] Slide {i+1} job: {job_id} — waiting...")
 
-    log(f"[higgsfield] Waiting for {len(job_ids)} jobs...")
-    image_urls = []
-    for i, job_id in enumerate(job_ids):
-        log(f"[higgsfield] Waiting for slide {i+1} ({job_id})...")
         result = subprocess.run(
             ["higgsfield", "generate", "wait", job_id, "--json"],
             capture_output=True, text=True, timeout=timeout
@@ -304,13 +298,14 @@ def generate_images(slides, timeout=1200):
             raise RuntimeError(f"Higgsfield wait failed slide {i+1}: {result.stderr[:300]}")
 
         out = json.loads(result.stdout)
+        log(f"[higgsfield] Slide {i+1} wait response: {result.stdout[:300]}")
         url = (out.get("output") or {}).get("url") or \
               out.get("url") or out.get("image_url") or \
               (out.get("outputs") or [{}])[0].get("url")
         if not url:
             raise RuntimeError(f"No URL in job result: {result.stdout[:300]}")
         image_urls.append(url)
-        log(f"[higgsfield] Slide {i+1} done: {url[:60]}...")
+        log(f"[higgsfield] Slide {i+1} done: {url[:80]}")
 
     return image_urls
 
