@@ -268,42 +268,29 @@ def generate_images(slides, timeout=1200):
         if not prompt:
             raise RuntimeError(f"Slide {i+1} has no image prompt")
 
-        log(f"[higgsfield] Submitting slide {i+1}/{len(slides)}...")
+        log(f"[higgsfield] Submitting slide {i+1}/{len(slides)} (waiting for result)...")
         result = subprocess.run(
             ["higgsfield", "generate", "create", "gpt_image_2",
              "--prompt", prompt,
              "--aspect_ratio", "3:4",
+             "--quality", "medium",
+             "--wait",
+             "--wait-timeout", "10m",
              "--json"],
-            capture_output=True, text=True, timeout=60
-        )
-        if result.returncode != 0:
-            raise RuntimeError(f"Higgsfield submit failed slide {i+1}: {result.stderr[:300]}")
-
-        out = json.loads(result.stdout)
-        if isinstance(out, list):
-            job_id = out[0] if out else None
-        elif isinstance(out, dict):
-            job_id = out.get("id") or out.get("job_id") or out.get("jobId")
-        else:
-            job_id = str(out) if out else None
-        if not job_id:
-            raise RuntimeError(f"No job ID in response: {result.stdout[:300]}")
-        log(f"[higgsfield] Slide {i+1} job: {job_id} — waiting...")
-
-        result = subprocess.run(
-            ["higgsfield", "generate", "wait", job_id, "--json"],
             capture_output=True, text=True, timeout=timeout
         )
         if result.returncode != 0:
-            raise RuntimeError(f"Higgsfield wait failed slide {i+1}: {result.stderr[:300]}")
+            raise RuntimeError(f"Higgsfield failed slide {i+1}: {result.stderr[:300]}")
 
+        log(f"[higgsfield] Slide {i+1} raw: {result.stdout[:400]}")
         out = json.loads(result.stdout)
-        log(f"[higgsfield] Slide {i+1} wait response: {result.stdout[:300]}")
-        url = (out.get("output") or {}).get("url") or \
-              out.get("url") or out.get("image_url") or \
-              (out.get("outputs") or [{}])[0].get("url")
+        if isinstance(out, list):
+            out = out[0] if out else {}
+        url = (out.get("results") or {}).get("rawUrl") or \
+              (out.get("output") or {}).get("url") or \
+              out.get("url") or out.get("image_url")
         if not url:
-            raise RuntimeError(f"No URL in job result: {result.stdout[:300]}")
+            raise RuntimeError(f"No URL in response: {result.stdout[:400]}")
         image_urls.append(url)
         log(f"[higgsfield] Slide {i+1} done: {url[:80]}")
 
