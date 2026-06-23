@@ -544,7 +544,10 @@ def log_post(content, post_id):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true", help="Skip Instagram posting")
+    parser.add_argument("--test", action="store_true", help="Dry-run with 1 slide only")
     args = parser.parse_args()
+    if args.test:
+        args.dry_run = True
 
     TMP_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -565,6 +568,9 @@ def main():
         raise RuntimeError("No slides in content. Check Claude output.")
 
     # 3. Generate images via Higgsfield CLI
+    if args.test:
+        slides = slides[:1]
+        log("[test] Limiting to 1 slide")
     image_urls = generate_images(slides)
     log(f"[higgsfield] Got {len(image_urls)} image URLs")
 
