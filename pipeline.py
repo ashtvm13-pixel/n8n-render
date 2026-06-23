@@ -228,7 +228,7 @@ def run_claude(prompt, timeout=1200):
         proc = subprocess.Popen(
             ["claude", "-p", prompt, "--output-format", "json",
              "--max-turns", "1",
-             "--model", "claude-sonnet-4-6"],
+             "--model", "claude-haiku-4-5-20251001"],
             stdout=subprocess.PIPE, stderr=None,  # stderr streams live to terminal
             text=True, env=env
         )
