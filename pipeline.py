@@ -228,7 +228,7 @@ def run_claude(prompt, timeout=1200):
         proc = subprocess.Popen(
             ["claude", "-p", prompt, "--output-format", "json",
              "--max-turns", "1",
-             "--model", "claude-haiku-4-5-20251001"],
+             "--model", "claude-sonnet-4-6"],
             stdout=subprocess.PIPE, stderr=None,  # stderr streams live to terminal
             text=True, env=env
         )
@@ -272,7 +272,6 @@ def generate_images(slides, timeout=1200):
         result = subprocess.run(
             ["higgsfield", "generate", "create", "openai_hazel",
              "--prompt", prompt,
-             "--aspect-ratio", "3:4",
              "--json"],
             capture_output=True, text=True, timeout=60
         )
