@@ -272,6 +272,7 @@ def generate_images(slides, timeout=1200):
         result = subprocess.run(
             ["higgsfield", "generate", "create", "openai_hazel",
              "--prompt", prompt,
+             "--aspect_ratio", "2:3",
              "--json"],
             capture_output=True, text=True, timeout=60
         )
