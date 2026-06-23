@@ -270,7 +270,7 @@ def generate_images(slides, timeout=1200):
 
         log(f"[higgsfield] Submitting slide {i+1}...")
         result = subprocess.run(
-            ["higgsfield", "generate", "create", "cinematic_studio_2_5",
+            ["higgsfield", "generate", "create", "gpt_image_2",
              "--prompt", prompt,
              "--aspect_ratio", "3:4",
              "--json"],
