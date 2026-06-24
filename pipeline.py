@@ -310,10 +310,12 @@ def generate_images(slides, timeout=1200, characters=None):
             rw = subprocess.run(
                 ["claude", "-p",
                  f"{character_context}\n\n{prev_context}"
-                 f"Rewrite this image prompt to pass content filters. No demons, death, violence, gore, nudity. "
-                 f"Keep characters consistent with the character sheet and previous slides. "
-                 f"Show power through divine light, not conflict. Each rewrite MORE conservative than last. "
-                 f"Output ONLY the rewritten prompt.\n\nOriginal: {current_scene}",
+                 f"The following image prompt was rejected by a content filter. "
+                 f"Make the MINIMUM edits needed to pass: remove only the specific words/phrases causing rejection "
+                 f"(demons, death, gore, violence, weapons striking flesh, graphic injury). "
+                 f"Keep ALL other text EXACTLY as written — same structure, same camera angles, same lighting, same atmosphere. "
+                 f"Do not rewrite. Do not improve. Only remove/replace flagged words. "
+                 f"Output ONLY the edited prompt.\n\nPrompt: {current_scene}",
                  "--output-format", "json", "--max-turns", "1", "--model", "claude-haiku-4-5-20251001"],
                 capture_output=True, text=True, timeout=120
             )
