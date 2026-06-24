@@ -473,13 +473,21 @@ def composite_text(input_file, output_file, slide_num, slides, story_title):
 
     if slide_num == 1:
         top_narr_y = BASELINE_Y - ((len(text_lines) - 1) * NARR_LH)
-        title_y = top_narr_y - NARR_PT - round(TITLE_PT * 0.3)
-        title_escaped = story_title.upper().replace('"', '\\"')
+        title_text = story_title.upper()
+        if len(title_text) > 28:
+            title_text = title_text[:27] + "…"
+        # scale down font if title is long; each char ≈ 0.65 * pt + kerning 0.12 * pt = 0.77 * pt wide
+        usable_w = W - 2 * LM
+        char_w_factor = 0.77
+        fit_pt = usable_w / (max(len(title_text), 1) * char_w_factor)
+        actual_title_pt = max(round(TITLE_PT * 0.6), min(TITLE_PT, round(fit_pt)))
+        title_y = top_narr_y - NARR_PT - round(actual_title_pt * 0.3)
+        title_escaped = title_text.replace('"', '\\"')
         cmd += [
             "-font", TITLE_FONT,
-            "-pointsize", str(TITLE_PT),
+            "-pointsize", str(actual_title_pt),
             "-fill", "#F2EBD9",
-            "-kerning", str(round(TITLE_PT * 0.12)),
+            "-kerning", str(round(actual_title_pt * 0.12)),
             "-annotate", f"+{LM}+{title_y}", title_escaped
         ]
 
