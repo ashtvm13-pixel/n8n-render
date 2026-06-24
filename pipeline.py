@@ -274,7 +274,7 @@ def generate_images(slides, timeout=1200, characters=None):
         prompt = slide.get("image_prompt") or slide.get("scene", "")
         if not prompt:
             raise RuntimeError(f"Slide {i+1} has no image prompt")
-        prompt = f"<<<{REF_ELEMENT_ID}>>> {prompt}"
+        prompt = f"<<<{REF_ELEMENT_ID}>>> {prompt} NO TEXT. NO WORDS. NO LETTERS. NO TITLES. NO CAPTIONS. NO TYPOGRAPHY. Pure image only."
 
         log(f"[higgsfield] Submitting slide {i+1}/{len(slides)} (waiting for result)...")
         result = subprocess.run(
@@ -324,7 +324,7 @@ def generate_images(slides, timeout=1200, characters=None):
                 current_scene = json.loads(rw.stdout).get("result", current_scene)
             except Exception:
                 pass
-            safe_prompt = f"<<<{REF_ELEMENT_ID}>>> {current_scene} Sacred mythic cinematic art. Volumetric fog. No text."
+            safe_prompt = f"<<<{REF_ELEMENT_ID}>>> {current_scene} Sacred mythic cinematic art. Volumetric fog. NO TEXT. NO WORDS. NO LETTERS. NO TITLES. NO CAPTIONS. NO TYPOGRAPHY. Pure image only."
             result = subprocess.run(
                 ["higgsfield", "generate", "create", "gpt_image_2",
                  "--prompt", safe_prompt,
