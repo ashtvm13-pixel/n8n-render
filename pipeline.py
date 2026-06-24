@@ -275,6 +275,7 @@ def generate_images(slides, timeout=1200):
              "--prompt", prompt,
              "--aspect_ratio", "3:4",
              "--quality", "medium",
+             "--resolution", "1k",
              "--wait",
              "--wait-timeout", "10m",
              "--json"],
