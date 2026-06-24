@@ -291,7 +291,7 @@ def generate_images(slides, timeout=1200):
             out = out[0] if out else {}
 
         current_scene = slide.get("scene", prompt)
-        for attempt in range(3):
+        for attempt in range(6):
             if out.get("status") != "nsfw":
                 break
             log(f"[higgsfield] Slide {i+1} NSFW (attempt {attempt+1}/3) — Claude rewriting...")
@@ -319,7 +319,7 @@ def generate_images(slides, timeout=1200):
             if isinstance(out, list):
                 out = out[0] if out else {}
         if out.get("status") == "nsfw":
-            raise RuntimeError(f"Slide {i+1} NSFW after 3 retries — change story theme")
+            raise RuntimeError(f"Slide {i+1} NSFW after 6 retries — change story theme")
             if isinstance(out, list):
                 out = out[0] if out else {}
         url = out.get("result_url") or \
