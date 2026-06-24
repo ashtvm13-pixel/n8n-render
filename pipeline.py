@@ -289,36 +289,37 @@ def generate_images(slides, timeout=1200):
         out = json.loads(result.stdout)
         if isinstance(out, list):
             out = out[0] if out else {}
-        status = out.get("status", "")
-        if status == "nsfw":
-            log(f"[higgsfield] Slide {i+1} NSFW rejected — asking Claude to rewrite safer prompt...")
-            scene = slide.get("scene", "")
-            rewrite_prompt = (
-                f"Rewrite this image prompt to avoid content filters (no demons, no death, no violence, no gore). "
-                f"Keep the characters, story moment, and cinematic atmosphere. Show power through light, not violence. "
-                f"Output ONLY the rewritten prompt, no explanation.\n\nOriginal: {scene}"
-            )
+
+        current_scene = slide.get("scene", prompt)
+        for attempt in range(3):
+            if out.get("status") != "nsfw":
+                break
+            log(f"[higgsfield] Slide {i+1} NSFW (attempt {attempt+1}/3) — Claude rewriting...")
             rw = subprocess.run(
-                ["claude", "-p", rewrite_prompt, "--output-format", "json",
-                 "--max-turns", "1", "--model", "claude-haiku-4-5-20251001"],
+                ["claude", "-p",
+                 f"Rewrite this image prompt to pass content filters. No demons, death, violence, gore, nudity. "
+                 f"Keep characters and story moment. Show power through divine light, not conflict. "
+                 f"Each rewrite must be MORE conservative than the last. Output ONLY the rewritten prompt.\n\nOriginal: {current_scene}",
+                 "--output-format", "json", "--max-turns", "1", "--model", "claude-haiku-4-5-20251001"],
                 capture_output=True, text=True, timeout=120
             )
             try:
-                safe_scene = json.loads(rw.stdout).get("result", scene)
+                current_scene = json.loads(rw.stdout).get("result", current_scene)
             except Exception:
-                safe_scene = scene
-            safe_prompt = f"<<<{REF_ELEMENT_ID}>>> {safe_scene} Sacred mythic cinematic art. Volumetric fog. No text."
+                pass
+            safe_prompt = f"<<<{REF_ELEMENT_ID}>>> {current_scene} Sacred mythic cinematic art. Volumetric fog. No text."
             result = subprocess.run(
                 ["higgsfield", "generate", "create", "gpt_image_2",
                  "--prompt", safe_prompt,
-                 "--aspect_ratio", "3:4",
-                 "--quality", "medium",
-                 "--resolution", "1k",
-                 "--wait", "--wait-timeout", "10m",
-                 "--json"],
+                 "--aspect_ratio", "3:4", "--quality", "medium", "--resolution", "1k",
+                 "--wait", "--wait-timeout", "10m", "--json"],
                 capture_output=True, text=True, timeout=timeout
             )
             out = json.loads(result.stdout)
+            if isinstance(out, list):
+                out = out[0] if out else {}
+        if out.get("status") == "nsfw":
+            raise RuntimeError(f"Slide {i+1} NSFW after 3 retries — change story theme")
             if isinstance(out, list):
                 out = out[0] if out else {}
         url = out.get("result_url") or \
