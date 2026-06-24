@@ -260,9 +260,16 @@ def run_claude(prompt, timeout=1200):
     return cli_out.get("result", "")
 
 
-def generate_images(slides, timeout=1200):
+def generate_images(slides, timeout=1200, characters=None):
     log(f"[higgsfield] Generating {len(slides)} images sequentially...")
     image_urls = []
+    character_context = ""
+    if characters:
+        lines = []
+        for name, attrs in characters.items():
+            lines.append(f"{name}: skin={attrs.get('skin','')} | hair={attrs.get('hair','')} | clothing={attrs.get('clothing','')} | distinctive={attrs.get('distinctive','')}")
+        character_context = "CHARACTER SHEET (maintain exactly):\n" + "\n".join(lines)
+    generated_prompts = []
 
     for i, slide in enumerate(slides):
         prompt = slide.get("image_prompt") or slide.get("scene", "")
@@ -290,16 +297,23 @@ def generate_images(slides, timeout=1200):
         if isinstance(out, list):
             out = out[0] if out else {}
 
-        current_scene = slide.get("scene", prompt)
+        current_scene = slide.get("image_prompt") or slide.get("scene", "")
         for attempt in range(6):
             if out.get("status") != "nsfw":
                 break
             log(f"[higgsfield] Slide {i+1} NSFW (attempt {attempt+1}/3) — Claude rewriting...")
+            prev_context = ""
+            if generated_prompts:
+                prev_context = "PREVIOUS SLIDES (match character appearance):\n" + "\n".join(
+                    f"Slide {j+1}: {p}" for j, p in enumerate(generated_prompts)
+                ) + "\n\n"
             rw = subprocess.run(
                 ["claude", "-p",
+                 f"{character_context}\n\n{prev_context}"
                  f"Rewrite this image prompt to pass content filters. No demons, death, violence, gore, nudity. "
-                 f"Keep characters and story moment. Show power through divine light, not conflict. "
-                 f"Each rewrite must be MORE conservative than the last. Output ONLY the rewritten prompt.\n\nOriginal: {current_scene}",
+                 f"Keep characters consistent with the character sheet and previous slides. "
+                 f"Show power through divine light, not conflict. Each rewrite MORE conservative than last. "
+                 f"Output ONLY the rewritten prompt.\n\nOriginal: {current_scene}",
                  "--output-format", "json", "--max-turns", "1", "--model", "claude-haiku-4-5-20251001"],
                 capture_output=True, text=True, timeout=120
             )
@@ -329,6 +343,7 @@ def generate_images(slides, timeout=1200):
         if not url:
             raise RuntimeError(f"No URL in response: {result.stdout[:400]}")
         image_urls.append(url)
+        generated_prompts.append(current_scene)
         log(f"[higgsfield] Slide {i+1} done: {url[:80]}")
 
     return image_urls
@@ -607,7 +622,7 @@ def main():
     if args.test:
         slides = slides[:1]
         log("[test] Limiting to 1 slide")
-    image_urls = generate_images(slides)
+    image_urls = generate_images(slides, characters=content.get("characters", {}))
     log(f"[higgsfield] Got {len(image_urls)} image URLs")
 
     failed = [u for u in image_urls if not str(u).startswith("http")]
