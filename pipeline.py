@@ -310,12 +310,14 @@ def generate_images(slides, timeout=1200, characters=None):
             rw = subprocess.run(
                 ["claude", "-p",
                  f"{character_context}\n\n{prev_context}"
-                 f"The following image prompt was rejected by a content filter. "
-                 f"Make the MINIMUM edits needed to pass: remove only the specific words/phrases causing rejection "
-                 f"(demons, death, gore, violence, weapons striking flesh, graphic injury). "
-                 f"Keep ALL other text EXACTLY as written — same structure, same camera angles, same lighting, same atmosphere. "
-                 f"Do not rewrite. Do not improve. Only remove/replace flagged words. "
-                 f"Output ONLY the edited prompt.\n\nPrompt: {current_scene}",
+                 f"This image prompt was rejected by a content filter. "
+                 f"Copy it EXACTLY word for word. Then find only the specific words or short phrases likely triggering the filter "
+                 f"(e.g. 'demon', 'death', 'gore', 'slaughter', 'weapons striking', 'blood', 'severed'). "
+                 f"Replace ONLY those flagged words with softer synonyms that preserve the same visual meaning — "
+                 f"e.g. 'demon' → 'dark entity', 'death' → 'stillness', 'battle' → 'confrontation'. "
+                 f"Every other word, every punctuation mark, every structural section stays IDENTICAL. "
+                 f"Do not rephrase sentences. Do not improve style. Do not add or remove anything else. "
+                 f"Output ONLY the minimally edited prompt.\n\nPrompt: {current_scene}",
                  "--output-format", "json", "--max-turns", "1", "--model", "claude-haiku-4-5-20251001"],
                 capture_output=True, text=True, timeout=120
             )
