@@ -288,7 +288,8 @@ def generate_images(slides, timeout=1200):
         out = json.loads(result.stdout)
         if isinstance(out, list):
             out = out[0] if out else {}
-        url = (out.get("results") or {}).get("rawUrl") or \
+        url = out.get("result_url") or \
+              (out.get("results") or {}).get("rawUrl") or \
               (out.get("output") or {}).get("url") or \
               out.get("url") or out.get("image_url")
         if not url:
