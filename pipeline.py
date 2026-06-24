@@ -291,8 +291,23 @@ def generate_images(slides, timeout=1200):
             out = out[0] if out else {}
         status = out.get("status", "")
         if status == "nsfw":
-            log(f"[higgsfield] Slide {i+1} NSFW rejected — retrying with safer prompt...")
-            safe_prompt = f"<<<{REF_ELEMENT_ID}>>> Sacred Hindu mythology scene, divine atmosphere, golden light, volumetric fog, cinematic art. No violence. No text."
+            log(f"[higgsfield] Slide {i+1} NSFW rejected — asking Claude to rewrite safer prompt...")
+            scene = slide.get("scene", "")
+            rewrite_prompt = (
+                f"Rewrite this image prompt to avoid content filters (no demons, no death, no violence, no gore). "
+                f"Keep the characters, story moment, and cinematic atmosphere. Show power through light, not violence. "
+                f"Output ONLY the rewritten prompt, no explanation.\n\nOriginal: {scene}"
+            )
+            rw = subprocess.run(
+                ["claude", "-p", rewrite_prompt, "--output-format", "json",
+                 "--max-turns", "1", "--model", "claude-haiku-4-5-20251001"],
+                capture_output=True, text=True, timeout=120
+            )
+            try:
+                safe_scene = json.loads(rw.stdout).get("result", scene)
+            except Exception:
+                safe_scene = scene
+            safe_prompt = f"<<<{REF_ELEMENT_ID}>>> {safe_scene} Sacred mythic cinematic art. Volumetric fog. No text."
             result = subprocess.run(
                 ["higgsfield", "generate", "create", "gpt_image_2",
                  "--prompt", safe_prompt,
