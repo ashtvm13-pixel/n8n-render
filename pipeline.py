@@ -48,16 +48,15 @@ TMP_DIR  = Path("/tmp/veda_pipeline")
 # PROMPT
 # ─────────────────────────────────────────────
 
-def load_recent_posts(n=15):
+def load_recent_posts():
     if not LOG_FILE.exists():
         return "No recent posts. Full creative freedom."
     entries = json.loads(LOG_FILE.read_text())
-    rows = entries[-n:]
-    if not rows:
+    if not entries:
         return "No recent posts. Full creative freedom."
     lines = [f"{i+1}. Title: {r.get('title','')} | Theme: {r.get('theme','')} | Source: {r.get('source','')}"
-             for i, r in enumerate(rows)]
-    return "RECENT POSTS — DO NOT REPEAT:\n" + "\n".join(lines)
+             for i, r in enumerate(entries)]
+    return f"PAST POSTS — ALL {len(entries)} MUST BE AVOIDED, pick a completely different story:\n" + "\n".join(lines)
 
 
 def build_prompt():
