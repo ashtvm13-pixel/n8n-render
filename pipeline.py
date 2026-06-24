@@ -481,7 +481,7 @@ def composite_text(input_file, output_file, slide_num, slides, story_title):
             "-pointsize", str(TITLE_PT),
             "-fill", "#F2EBD9",
             "-stroke", "#F2EBD9",
-            "-strokewidth", "1.5",
+            "-strokewidth", "0.8",
             "-kerning", str(round(TITLE_PT * 0.12)),
             "-annotate", f"+{LM}+{title_y}", title_escaped,
             "-stroke", "none",
