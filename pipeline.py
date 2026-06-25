@@ -115,7 +115,7 @@ STEP 5: Each narration (except slide 5) must end on tension that compels swipe."
 
     json_schema = """{
   "post_type": "carousel",
-  "title": "compelling 2-4 word title",
+  "title": "compelling 2-4 word title — MUST be 22 characters or fewer (including spaces). Choose words that fit naturally, never abbreviate.",
   "theme": "3-5 word topic for logging",
   "source": "Vedic source — e.g. Bhagavata Purana 8.7",
   "caption": "full caption with spiritual insight and CTA (max 2500 chars)",
@@ -473,7 +473,7 @@ def composite_text(input_file, output_file, slide_num, slides, story_title):
     if slide_num == 1:
         top_narr_y = BASELINE_Y - ((len(text_lines) - 1) * NARR_LH)
         title_y = top_narr_y - NARR_PT - round(TITLE_PT * 0.3)
-        title_text = story_title.upper()[:22]
+        title_text = story_title.upper()
         title_escaped = title_text.replace('"', '\\"')
         cmd += [
             "-font", TITLE_FONT,
